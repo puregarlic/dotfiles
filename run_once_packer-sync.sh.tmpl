@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Neovim config hashes
+{{- $dir := .chezmoi.sourceDir -}}
+{{ range (glob (list $dir "private_dot_config/**/*.lua" | join "/")) }}
+# {{ . | replace $dir "" }}: {{ include . | sha256sum }}
+{{- end }}
+
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+echo "PackerSync completed"

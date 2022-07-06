@@ -1,0 +1,27 @@
+{{- if (eq .chezmoi.os "linux") -}}
+#!/bin/sh
+
+if [ ! $(which cargo) ]; then
+  curl https://sh.rustup.rs -sSf | sh -s -- -y
+fi
+
+sudo add-apt-repository ppa:neovim-ppa/unstable
+sudo apt-get update
+sudo apt-get install -y zsh zsh-antigen neovim fzf
+
+cargo install starship --locked
+cargo install exa --locked
+cargo install zoxide --locked
+cargo install zellij --locked
+
+chsh -s $(which zsh)
+{{- else if (eq .chezmoi.os "darwin") -}}
+#!/bin/sh
+
+if [ ! $(which brew) ]; then
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+brew install zsh antigen starship zoxide exa fzf
+brew install neovim --HEAD
+{{- end -}}
