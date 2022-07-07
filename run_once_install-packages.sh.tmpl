@@ -7,14 +7,16 @@ fi
 
 sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
-sudo apt-get install -y zsh zsh-antigen neovim fzf
+sudo apt-get install -y zsh neovim fzf ripgrep
 
 cargo install starship --locked
 cargo install exa --locked
 cargo install zoxide --locked
 cargo install zellij --locked
 
-chsh -s $(which zsh)
+if [ ! $SHELL = $(which zsh) ]; then
+  chsh -s $(which zsh)
+fi
 {{- else if (eq .chezmoi.os "darwin") -}}
 #!/bin/sh
 
@@ -22,6 +24,11 @@ if [ ! $(which brew) ]; then
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-brew install zsh antigen starship zoxide exa fzf
 brew install neovim --HEAD
+brew install zsh starship zoxide exa fzf ripgrep
+
+if [ ! $SHELL = $(which zsh) ]; then
+  sudo sh -c "echo $(which zsh) >> /etc/shells"
+  chsh -s $(which zsh)
+fi
 {{- end -}}

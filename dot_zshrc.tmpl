@@ -1,0 +1,115 @@
+autoload -Uz compinit; compinit
+
+bindkey -v
+export KEYTIMEOUT=1
+
+cursor_mode() {
+    # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
+    cursor_block='\e[2 q'
+    cursor_beam='\e[6 q'
+
+    function zle-keymap-select {
+        if [[ ${KEYMAP} == vicmd ]] ||
+            [[ $1 = 'block' ]]; then
+            echo -ne $cursor_block
+        elif [[ ${KEYMAP} == main ]] ||
+            [[ ${KEYMAP} == viins ]] ||
+            [[ ${KEYMAP} = '' ]] ||
+            [[ $1 = 'beam' ]]; then
+            echo -ne $cursor_beam
+        fi
+    }
+
+    zle-line-init() {
+        echo -ne $cursor_beam
+    }
+
+    zle -N zle-keymap-select
+    zle -N zle-line-init
+}
+
+cursor_mode
+
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+export BAT_THEME="Sublime Snazzy"
+export BAT_PAGER=""
+
+alias cat="bat --tabs 2 -n"
+
+# Start Starship prompt
+eval "$(starship init zsh)"
+
+source {{ .chezmoi.homeDir }}/.local/bin/antigen.zsh
+
+# oh-my-zsh command not found plugin
+antigen bundle Tarrasch/zsh-command-not-found
+
+# Autosuggestions
+antigen bundle zsh-users/zsh-autosuggestions
+
+# Exa-powered ls capabilities
+antigen bundle DarrinTisdale/zsh-aliases-exa
+
+# Elixir/Phoenix aliases
+antigen bundle gusaiani/elixir-oh-my-zsh
+
+# Git aliases from oh-my-zsh
+antigen bundle mdumitru/git-aliases
+
+# fzf file finding
+antigen bundle leophys/zsh-plugin-fzf-finder
+
+# fzf tab completion
+antigen bundle Aloxaf/fzf-tab
+
+# fzf-powered git ops
+antigen bundle wfxr/forgit
+
+# Antigen updates
+antigen bundle unixorn/autoupdate-antigen.zshplugin
+
+# Syntax highlighting bundle.
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+# Tell Antigen that you're done.
+antigen apply
+
+alias vim='nvim'
+alias zj="zellij"
+
+eval "$(zoxide init zsh)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Print smug Paimon
+echo ""
+echo "  ⣿⣿⢣⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⡜⠩⣟⣤⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢈⣿⣶⡈⢿⣿⣷⡘⣎⢻⣿⣦⠀⠐⣿"
+echo "  ⣿⣿⢣⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠈⣼⣷⡘⢼⡣⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠰⣿⣿⣿⣦⡹⣿⣷⠈⡎⢿⣿⣧⡀⠸"
+echo "  ⣿⡏⣜⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⣼⣿⣿⣿⡄⠻⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠈⣉⣉⣉⣭⣴⣌⠻⣥⠘⡘⣿⣿⣿⡄"
+echo "  ⣿⡇⢯⣾⣿⣿⣿⣿⣿⣿⣿⠋⢠⣾⣿⡿⠟⠛⣩⣄⢻⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠰⣿⣿⣿⣿⣿⣿⣦⡑⢇⢡⠹⣿⣿⣿"
+echo "  ⣿⢭⠧⣿⣿⣿⣿⣿⣿⡛⠃⢀⣋⣉⣤⣤⣶⣿⢿⣿⣆⠁⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠞⠔⣨⣿⣿⣿⣿⣿⣷⣌⠀⠇⣿⣿⣿"
+echo "  ⣿⢎⣛⢾⣿⣿⣿⣿⡟⠁⣠⣿⣿⣿⡿⠟⣋⡴⡌⣿⣿⡆⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄⠸⣼⣿⣿"
+echo "  ⣿⠸⣭⢾⣿⣿⡿⠋⠄⣰⣿⣿⣿⣿⣶⣶⣶⣦⣥⣸⣿⣿⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⣼⠿⠟⠛⣛⡿⠿⠛⠉⠃⢻⡇⠀⢻⣿⣿"
+echo "  ⣿⢘⢶⢫⣿⡟⣡⢋⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⢸⣿⣿⣿⣿⣿⣿⣿⠋⡀⠰⠖⠚⠋⠉⠀⠀⠀⠀⡀⠀⣿⠇⠀⢸⣿⣿"
+echo "  ⣏⠈⣞⢧⡻⠜⣡⣾⣿⣿⣿⠿⠿⠛⠛⣋⣉⣩⠙⢿⣿⣿⣷⠈⣿⣿⣿⣿⣿⡿⢁⡞⢁⠀⠀⠀⠀⠀⠀⣤⠀⢀⡟⢸⣿⠀⠥⠈⣿⣿"
+echo "  ⣇⠘⡼⠃⠡⠞⠛⠛⠛⠛⠋⠋⠁⠉⠉⠀⠉⠉⠉⢠⣿⣿⣿⡆⣿⣿⣿⡿⢋⡴⡫⢀⣆⣬⣿⠀⠀⠀⠀⣿⠀⢠⣷⣿⣻⠀⢣⠀⣿⣿"
+echo "  ⣧⢈⣴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⡄⠀⢠⡄⣤⣽⣿⣿⠇⣿⡿⢋⡴⣫⠞⣡⣿⣿⣿⣿⡀⠀⠀⠀⠛⠀⣼⣿⣟⣿⠀⡅⠂⢽⣿"
+echo "  ⡷⢈⣿⣷⡀⢻⣿⣿⡇⠀⠀⠀⠀⠀⣿⣷⠀⢸⣿⣿⣿⣿⣿⠀⣭⣒⠯⡞⢁⣴⣿⣿⣿⣿⣿⣇⠀⠀⠎⠀⣰⣿⣿⢿⣾⡄⢌⡁⢸⣿"
+echo "  ⣿⠀⣿⣿⣷⣌⣿⣿⣷⠀⠀⠀⠠⠀⠘⠋⠀⢸⣿⣿⣿⣿⡟⢠⡳⠎⣉⣴⣿⣿⣿⣿⣿⣿⣿⣿⣦⣤⣶⣾⣿⣿⣻⣿⣿⡇⠀⠆⢸⣿"
+echo "  ⣟⡆⢻⣿⣿⣿⣟⢿⣿⣧⠀⠀⠠⠘⢐⣀⢀⣾⣿⣿⣿⣿⢃⣨⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⡿⣿⡽⣾⣟⣷⣿⣇⠘⡄⢸⣿"
+echo "  ⣟⢦⢸⣿⢿⣾⣿⣷⣿⣿⣿⣿⣿⣿⣭⣽⣿⣿⢿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣟⣿⣽⣿⣽⣿⣾⣟⡇⠀⠆⢸⣿"
+echo "  ⣟⢮⡀⣿⣿⣿⣾⣟⣷⣿⣽⡿⣽⣻⢿⣻⣷⣿⣻⣿⣿⣿⠿⣿⣿⣿⠿⠟⠋⠉⠛⠛⢋⣴⣿⣿⣿⣿⣻⣿⣾⣿⣾⣟⡟⠀⠈⠆⣸⣿"
+echo "  ⣟⢮⡅⠘⣿⣾⣿⣻⣿⣽⣿⣻⣟⣿⣻⣿⣾⣻⣿⣿⣷⣿⡇⢀⠀⢠⠄⡤⣀⠀⠀⠀⢺⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠎⠀⡔⠈⠆⣼⣿"
+echo "  ⣿⢮⣝⠀⠘⢻⣿⣻⣿⣿⣾⣿⣿⣿⣻⣿⣻⣿⣿⣿⣿⣾⠀⣍⠲⣍⣚⠱⣌⠏⣆⠀⣹⣿⣿⣿⣿⣿⣿⣿⣿⠏⠁⢠⠃⡄⢘⠀⣿⣿"
+echo "  ⣿⡞⣼⢃⠀⠀⠉⠻⣟⣿⣿⡿⠛⣛⠛⠻⠿⣿⣟⣿⣿⣾⠀⣎⢱⡒⣬⠳⡜⡜⢢⠃⣼⣿⣿⣿⠿⢛⣉⣭⣤⠀⡘⢄⠣⠀⡌⢠⣿⣿"
+echo "  ⣿⡟⣼⣩⠆⠀⠀⠀⠀⠉⠛⠇⠘⠻⣿⣿⣶⣤⡙⢿⣿⣿⣧⠘⢢⠵⣈⢳⡩⡜⠃⣰⣿⠿⢋⣴⣾⣿⣿⠿⠋⢀⠜⡀⠃⠠⠌⢰⣿⣿"
+echo "  ⣿⣟⠶⣥⣛⠀⠀⠀⠀⠀⠀⠒⠤⠑⢢⡙⢿⣿⣷⡌⢻⣿⣿⣷⣦⣍⣈⣃⣠⣡⡾⠟⣡⣴⣿⣿⣿⠋⠐⠁⠀⠈⢆⠡⠁⡜⠀⣿⣿⣿"
+echo "  ⣿⣿⡝⣦⢏⢷⡀⠀⠀⠀⠀⠀⠀⠁⠀⠹⣼⣿⣿⣿⡄⢉⠛⠛⠻⠿⠿⠛⣉⣥⣶⣿⣿⣿⣿⠿⠋⠀⠀⠀⠀⠀⠀⠡⡘⠄⡰⣿⣿⣿"
+echo "  ⣿⣿⡟⣖⣫⠞⣵⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣦⣈⡁⣁⣤⣶⣿⣿⣿⣿⣿⠿⠋⣡⡆⠀⠀⠀⠀⠀⢀⠔⣡⠘⠀⣽⣿⣿⣿"
+echo "  ⡻⢿⣿⡼⣱⡛⢶⡹⣄⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⣠⣾⣿⠃⠀⠀⠀⠐⠈⠆⠊⠀⠀⡤⣿⣿⣿⣿"
+echo "  ⣝⣣⢯⡳⢇⡻⣥⢻⣜⡳⣄⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠋⣠⣾⣿⣿⡟⠠⠀⠀⠀⠀⠀⠀⠀⢀⡾⣽⣿⣿⣿⣿"
+
